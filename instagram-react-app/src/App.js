@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+
+import {Link} from 'react-router-dom';
+import RouteSwitch from './components/RouteSwitch';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      Temporary main page for all pages  - WILL BE REPLACED BY LOGIN PAGE/INSTAGRAM HOME PAGE
+      
+      <ul> 
+        <li> 
+          <Link to = "/Profile"> Profile </Link>  
+        </li>
+
+        <li> 
+          <Link to = "/addPicture"> Importing Picture </Link>  
+        </li>
+
+        <li> 
+          <Link to = "/home"> Home </Link>  
+        </li>
+
+        <li> 
+          <Link to = "/login"> login </Link>  
+        </li>
+
+      </ul>
+
+      
     </div>
   );
 }
