@@ -12,9 +12,10 @@ const Login = () => {
         <button onClick = {signInWithGoogle}> Sign in with google</button>
         <h3> {localStorage.getItem("name")}</h3>
         <h3> {localStorage.getItem("email")}</h3>
-        <h3> {localStorage.getItem("profilePic")}</h3>
+        <img src = {localStorage.getItem("profilePic")}/>
       </div>
     );
   };
   
+  // Lingering issue: Need to auto update the info. Right now, you have to refresh the page to update info.
   export default Login;

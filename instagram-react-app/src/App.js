@@ -1,6 +1,6 @@
 
 import {Link} from 'react-router-dom';
-import RouteSwitch from './components/RouteSwitch';
+// import RouteSwitch from './components/RouteSwitch';
 
 function App() {
   return (
