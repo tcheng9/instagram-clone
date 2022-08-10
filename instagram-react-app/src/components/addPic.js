@@ -1,25 +1,42 @@
 import {Link} from 'react-router-dom';
 import {storage} from '../firebase';
-import {useState} from "react";
-import {ref, uploadBytes} from "firebase/storage";
+import {useState, useEffect} from "react";
+import {ref, uploadBytes, listAll, getDownloadURL} from "firebase/storage";
+import { isReactNative } from '@firebase/util';
 
 const AddPic = () => {
 
     const [imageUpload, setImageUpload] = useState(null);
+    const [imageList, setImageList] = useState([]);
+    const imageListRef = ref(storage, "images/");
 
     const uploadImage = () => {
-       
+      
       if (imageUpload == null) return;
       console.log('clicked');
-      const imageRef = ref(storage);
-      uploadBytes(imageRef, imageUpload).then(() => {
-        alert("image uploaded");
+      const imageRef = ref(storage, `images/${imageUpload.name}`);
+      uploadBytes(imageRef, imageUpload).then((snaphsot) => {
+        console.log("uploading");
+        getDownloadURL(snaphsot.ref).then((url) => {
+          setImageList((prev) => [...prev, url])
+        })
+        
       })
     }
-    const onSubmit = (e) => {
-      e.preventDefault();
+    // const onSubmit = (e) => {
+    //   e.preventDefault();
 
-    }
+    // }
+
+    useEffect(() => {
+      listAll(imageListRef).then((response) => {
+        response.items.forEach((item) => {
+          getDownloadURL(item).then((url) => {
+            setImageList((prev) => [...prev, url]);
+          });
+        });
+      });
+    }, []);
 
     return (
       <div>
@@ -33,6 +50,12 @@ const AddPic = () => {
           <input type = "text" name = "username" placeholder = "NAME" />
           <button onClick = {uploadImage}> Upload image </button>
         
+      </div>
+
+      <div id = "imageList">
+        {imageList.map((url) => {
+          return <img src = {url} />
+        })}
       </div>
       </div>
     );
