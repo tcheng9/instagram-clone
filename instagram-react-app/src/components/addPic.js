@@ -28,15 +28,15 @@ const AddPic = () => {
 
     // }
 
-    useEffect(() => {
-      listAll(imageListRef).then((response) => {
-        response.items.forEach((item) => {
-          getDownloadURL(item).then((url) => {
-            setImageList((prev) => [...prev, url]);
-          });
-        });
-      });
-    }, []);
+    // useEffect(() => {
+    //   listAll(imageListRef).then((response) => {
+    //     response.items.forEach((item) => {
+    //       getDownloadURL(item).then((url) => {
+    //         setImageList((prev) => [...prev, url]);
+    //       });
+    //     });
+    //   });
+    // }, []);
 
     return (
       <div>
@@ -52,11 +52,11 @@ const AddPic = () => {
         
       </div>
 
-      <div id = "imageList">
+      {/* <div id = "imageList">
         {imageList.map((url) => {
           return <img src = {url} />
         })}
-      </div>
+      </div> */}
       </div>
     );
   };

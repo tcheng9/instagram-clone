@@ -14,10 +14,14 @@ useEffect(() => {
     response.items.forEach((item) => {
       getDownloadURL(item).then((url) => {
         setImageList((prev) => [...prev, url]);
+      
       })
     })
   });
-},[])
+}, [])
+
+
+// I think useEffect and setImageList is calling duplicates
 
   return (
     <div>
