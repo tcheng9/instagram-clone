@@ -30,12 +30,20 @@ useEffect(() => {
       <ul>
       <Link to = "/"> Main page </Link>
     </ul>
-
-    <div id = "imgList">
-      {imageList.map((url) => {
-        return <img src = {url}/>
-      })}
-    </div>
+    <div id = "postContainer">
+        <div id = "imgList">
+          {imageList.map((url) => {
+            return( 
+            <div>
+              <h1>Title </h1> 
+              <img src = {url}/>
+              <p> comment placeholder </p>
+            </div>
+              )
+          })}
+        </div>
+     
+      </div>
     </div>
   );
 };
