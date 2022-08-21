@@ -4,11 +4,14 @@ import {useState, useEffect} from "react";
 import {ref, uploadBytes, listAll, getDownloadURL} from "firebase/storage";
 import { isReactNative } from '@firebase/util';
 
+
 const AddPic = () => {
 
     const [imageUpload, setImageUpload] = useState(null);
     const [imageList, setImageList] = useState([]);
     const imageListRef = ref(storage, "images/");
+    const [currFileName, setCurrFileName] = useState('');
+    const [currImgUrl, setCurrImgUrl] = useState('');
 
     const uploadImage = (imgObjVal) => {
       
@@ -23,22 +26,50 @@ const AddPic = () => {
         
       })
     }
+
     const onSubmit = (e) => {
       e.preventDefault();
-      const elementsArray = [...e.target.elements[2].value];
-      uploadImage(elementsArray[2]);
+      // const elementsArray = [...e.target.elements[2].value];
+      const elementsArray = [...e.target.elements];
+      const formFileName = e.target.elements[2].files[0].name;
+      setCurrFileName(formFileName);
       
+      console.log(formFileName);
 
+      getImgURL(formFileName)
     }
 
     
+    const getImgURL = (imgName) => {
+      //Reference firebase storage
+      const storageRef = ref(storage);
+
+      //Ref a specific folder in storage
+      const imagesRef = ref(storage, "images/" + imgName);
+      
+      //Ref a specific file in said storage 
+      const fileName = imgName;
+      
+      //get ref to specific image
+      const spaceRef = ref(imagesRef, fileName);
+
+      
+      
+      //Get public URL
+      
+
+      
+
+    }
     // useEffect(() => {
+      
     //   listAll(imageListRef).then((response) => {
     //     response.items.forEach((item) => {
-    //       getDownloadURL(item).then((url) => {
-    //         setImageList((prev) => [...prev, url]);
+    //       console.log(getDownloadURL(item));
+    //       // getDownloadURL(item).then((url) => {
+    //         // setImageList((prev) => [...prev, url]);
     //       });
-    //     });
+    //     // });
     //   });
     // }, []);
 
