@@ -2,7 +2,8 @@ import {Link} from 'react-router-dom';
 import {storage} from '../firebase';
 import {useState, useEffect} from "react";
 import {ref, uploadBytes, listAll, getDownloadURL} from "firebase/storage";
-import { isReactNative } from '@firebase/util';
+// import { isReactNative } from '@firebase/util';
+import {getDatabase, set} from 'firebase/database';
 
 
 const AddPic = () => {
@@ -36,30 +37,35 @@ const AddPic = () => {
       
       console.log(formFileName);
 
-      getImgURL(formFileName)
+      getImgURL(formFileName);
+      dataToDB(e);
     }
 
     
     const getImgURL = (imgName) => {
-      //Reference firebase storage
-      const storageRef = ref(storage);
+      //NOTE: storage is actually an imported function `const storage = getStorage()`;
 
-      //Ref a specific folder in storage
+      //Ref a specific file in storage
       const imagesRef = ref(storage, "images/" + imgName);
-      
-      //Ref a specific file in said storage 
-      const fileName = imgName;
-      
-      //get ref to specific image
-      const spaceRef = ref(imagesRef, fileName);
 
+      //Get download URL and set to var
+      getDownloadURL(imagesRef).then((url => {
+        console.log(url);
+        setCurrImgUrl(url);
+        
+      }))
+      console.log("we're outside the function" + currImgUrl);
       
-      
-      //Get public URL
-      
+    }
 
+    const dataToDB = (event) => {
+      const db = getDatabase();
       
-
+      set(ref(db, 'posts/'), {
+        title : event.target.elements[0].value,
+        caption: event.target.elements[1].value,
+        pictureLink: currImgUrl
+      })
     }
     // useEffect(() => {
       
