@@ -4,7 +4,9 @@ import {useState, useEffect} from "react";
 import {ref, uploadBytes, listAll, getDownloadURL} from "firebase/storage";
 // import { isReactNative } from '@firebase/util';
 import {getDatabase, set} from 'firebase/database';
-
+import {doc, setDoc} from "firebase/firestore";
+import {collection, getDocs, addDoc} from "firebase/firestore";
+import { firestoreDb } from '../firebase';
 
 const AddPic = () => {
 
@@ -36,9 +38,10 @@ const AddPic = () => {
       setCurrFileName(formFileName);
       
       console.log(formFileName);
-
+      uploadImage();
       getImgURL(formFileName);
-      dataToDB(e);
+      
+      dataToDB(e, currImgUrl);
     }
 
     
@@ -58,15 +61,18 @@ const AddPic = () => {
       
     }
 
-    const dataToDB = (event) => {
-      const db = getDatabase();
-      
-      set(ref(db, 'posts/'), {
-        title : event.target.elements[0].value,
+    const dataToDB = (event, imgUrl) => {
+      const colRef = collection(firestoreDb, "posts");
+      addDoc(colRef, {
         caption: event.target.elements[1].value,
-        pictureLink: currImgUrl
+        pictureLink: event.target.elements[0].value,
+        title: imgUrl
       })
+      
+      
     }
+
+    
     // useEffect(() => {
       
     //   listAll(imageListRef).then((response) => {
