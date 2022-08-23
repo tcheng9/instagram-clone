@@ -7,6 +7,7 @@ import {getDatabase, set} from 'firebase/database';
 import {doc, setDoc} from "firebase/firestore";
 import {collection, getDocs, addDoc} from "firebase/firestore";
 import { firestoreDb } from '../firebase';
+import { hasSelectionSupport } from '@testing-library/user-event/dist/utils';
 
 const AddPic = () => {
 
@@ -15,21 +16,9 @@ const AddPic = () => {
     const imageListRef = ref(storage, "images/");
     const [currFileName, setCurrFileName] = useState('');
     const [currImgUrl, setCurrImgUrl] = useState('');
-
-    const uploadImage = (imgObjVal) => {
-      
-      if (imageUpload == null) return;
-      console.log('clicked');
-      const imageRef = ref(storage, `images/${imageUpload.name}`);
-      uploadBytes(imageRef, imageUpload).then((snaphsot) => {
-        console.log("uploading");
-        getDownloadURL(snaphsot.ref).then((url) => {
-          setImageList((prev) => [...prev, url])
-        })
-        
-      })
-    }
-
+   
+    
+    
     const onSubmit = (e) => {
       e.preventDefault();
       // const elementsArray = [...e.target.elements[2].value];
@@ -38,12 +27,53 @@ const AddPic = () => {
       setCurrFileName(formFileName);
       
       console.log(formFileName);
+      //Function to upload the image
       uploadImage();
-      getImgURL(formFileName);
       
-      dataToDB(e, currImgUrl);
+      //Wait for image to finish uploading
+     
+      //ISSUE: Sleep will let other functions run while we wait for image to upload
+      
+      setTimeout(function() {
+        // //Get URL of image (by accessing DB and checking if it exists)
+        getImgURL(formFileName);
+        console.log(currImgUrl);
+        // //Load info + img url to database
+        dataToDB(e, currImgUrl);
+      }, 30000)
+
+      // //Get URL of image (by accessing DB and checking if it exists)
+      // getImgURL(formFileName);
+      
+      // //Load info + img url to database
+      // dataToDB(e, currImgUrl);
+    
+
+      // //After uploaded, get the image url
+      // getImgURL(formFileName);
+      
+
+      // //After we have the image URL, we can 
+      // dataToDB(e, currImgUrl);
     }
 
+    const uploadImage = () => {
+      
+      if (imageUpload == null) return;
+      
+      const imageRef = ref(storage, `images/${imageUpload.name}`);
+      uploadBytes(imageRef, imageUpload).then((snaphsot) => {
+        console.log("uploading");
+        getDownloadURL(snaphsot.ref).then((url) => {
+          setImageList((prev) => [...prev, url])
+        })
+        
+      })
+
+      return "working";
+    }
+
+    
     
     const getImgURL = (imgName) => {
       //NOTE: storage is actually an imported function `const storage = getStorage()`;
@@ -58,7 +88,7 @@ const AddPic = () => {
         
       }))
       console.log("we're outside the function" + currImgUrl);
-      
+      return "working";
     }
 
     const dataToDB = (event, imgUrl) => {
@@ -69,7 +99,7 @@ const AddPic = () => {
         title: imgUrl
       })
       
-      
+      return "working";
     }
 
     
