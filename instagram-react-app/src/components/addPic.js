@@ -26,7 +26,7 @@ const AddPic = () => {
       const formFileName = e.target.elements[2].files[0].name;
       setCurrFileName(formFileName);
       
-      console.log(formFileName);
+      
       //Function to upload the image
       uploadImage();
       
@@ -36,8 +36,9 @@ const AddPic = () => {
       
       setTimeout(function() {
         // //Get URL of image (by accessing DB and checking if it exists)
+        
         getImgURL(formFileName);
-        console.log(currImgUrl);
+        
         // //Load info + img url to database
         dataToDB(e, currImgUrl);
       }, 30000)
@@ -65,12 +66,17 @@ const AddPic = () => {
       uploadBytes(imageRef, imageUpload).then((snaphsot) => {
         console.log("uploading");
         getDownloadURL(snaphsot.ref).then((url) => {
-          setImageList((prev) => [...prev, url])
+          console.log("uuploding img url");
+          console.log(url); //Url exists here. but not being set corectly.
+          setImageList((prev) => [...prev, url]);
+          setCurrImgUrl(url);
+          console.log("after setting img url");
+          console.log(currImgUrl);
         })
         
       })
 
-      return "working";
+     
     }
 
     
@@ -84,11 +90,11 @@ const AddPic = () => {
       //Get download URL and set to var
       getDownloadURL(imagesRef).then((url => {
         console.log(url);
-        setCurrImgUrl(url);
+        //setCurrImgUrl(url);
         
       }))
       console.log("we're outside the function" + currImgUrl);
-      return "working";
+      
     }
 
     const dataToDB = (event, imgUrl) => {
@@ -96,11 +102,11 @@ const AddPic = () => {
       console.log(imgUrl);
       addDoc(colRef, {
         caption: event.target.elements[1].value,
-        pictureLink: event.target.elements[0].value,
-        title: imgUrl
+        pictureLink: imgUrl,
+        title: event.target.elements[0].value
       })
       
-      return "working";
+      
     }
 
     
