@@ -93,6 +93,7 @@ const AddPic = () => {
 
     const dataToDB = (event, imgUrl) => {
       const colRef = collection(firestoreDb, "posts");
+      console.log(imgUrl);
       addDoc(colRef, {
         caption: event.target.elements[1].value,
         pictureLink: event.target.elements[0].value,
