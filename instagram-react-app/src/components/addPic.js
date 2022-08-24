@@ -22,7 +22,7 @@ const AddPic = () => {
     const onSubmit = (e) => {
       e.preventDefault();
       // const elementsArray = [...e.target.elements[2].value];
-      const elementsArray = [...e.target.elements];
+      // const elementsArray = [...e.target.elements];
       const formFileName = e.target.elements[2].files[0].name;
       setCurrFileName(formFileName);
       
@@ -37,7 +37,7 @@ const AddPic = () => {
       setTimeout(function() {
         // //Get URL of image (by accessing DB and checking if it exists)
         
-        getImgURL(formFileName);
+        setCurrImgUrl(getImgURL(formFileName));
         
         // //Load info + img url to database
         dataToDB(e, currImgUrl);
@@ -66,12 +66,8 @@ const AddPic = () => {
       uploadBytes(imageRef, imageUpload).then((snaphsot) => {
         console.log("uploading");
         getDownloadURL(snaphsot.ref).then((url) => {
-          console.log("uuploding img url");
-          console.log(url); //Url exists here. but not being set corectly.
           setImageList((prev) => [...prev, url]);
-          setCurrImgUrl(url);
-          console.log("after setting img url");
-          console.log(currImgUrl);
+          
         })
         
       })
@@ -88,17 +84,20 @@ const AddPic = () => {
       const imagesRef = ref(storage, "images/" + imgName);
 
       //Get download URL and set to var
-      getDownloadURL(imagesRef).then((url => {
+////////MAIN ISSUE: HOW TO GET SETCURRIMGURL TO SET A VALUE
+      getDownloadURL(imagesRef).then((url) => {
+        console.log("inside getImgURL() function");
         console.log(url);
-        //setCurrImgUrl(url);
+        setCurrImgUrl((url) => url);
+        console.log(currImgUrl);
         
-      }))
-      console.log("we're outside the function" + currImgUrl);
+      });
       
     }
 
     const dataToDB = (event, imgUrl) => {
       const colRef = collection(firestoreDb, "posts");
+      console.log("uploading to DB");
       console.log(imgUrl);
       addDoc(colRef, {
         caption: event.target.elements[1].value,
