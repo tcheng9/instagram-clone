@@ -16,7 +16,7 @@ const AddPic = () => {
     const imageListRef = ref(storage, "images/");
     const [currFileName, setCurrFileName] = useState('');
     const [currImgUrl, setCurrImgUrl] = useState('');
-   
+    const currImgUrlRef = useRef(currImgUrl);
     
     
     const onSubmit = (e) => {
@@ -34,15 +34,16 @@ const AddPic = () => {
      
       //ISSUE: Sleep will let other functions run while we wait for image to upload
       
-      setTimeout(function() {
+      const timeoutUpload = setTimeout(function() {
         // //Get URL of image (by accessing DB and checking if it exists)
         
-        setCurrImgUrl(getImgURL(formFileName));
+        getImgURL(formFileName);
         
         // //Load info + img url to database
         dataToDB(e, currImgUrl);
       }, 30000)
 
+      return () => clearTimeout(timeoutUpload);
       // //Get URL of image (by accessing DB and checking if it exists)
       // getImgURL(formFileName);
       
@@ -86,13 +87,16 @@ const AddPic = () => {
       //Get download URL and set to var
 ////////MAIN ISSUE: HOW TO GET SETCURRIMGURL TO SET A VALUE
       getDownloadURL(imagesRef).then((url) => {
-        console.log("inside getImgURL() function");
-        console.log(url);
-        setCurrImgUrl((url) => url);
-        console.log(currImgUrl);
-        
+        currImgUrlRef = currImgUrl
+        console.log("fb storage url is: " + url);
+        setCurrImgUrl(currImgUrlRef);
+       
       });
       
+    }
+
+    const newImgUrl =(imgName) => {
+      const imageRef = ref(storage, 'images/' + imgName);
     }
 
     const dataToDB = (event, imgUrl) => {
@@ -105,7 +109,7 @@ const AddPic = () => {
         title: event.target.elements[0].value
       })
       
-      
+      currImgUrl = [];
     }
 
     
