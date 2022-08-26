@@ -40,8 +40,7 @@ const AddPic = () => {
         getImgURL(e, formFileName);
         
         // //Load info + img url to database
-        console.log(urlRef.current);
-        console.log(currImgUrl);
+       
         
       }, 30000)
 
@@ -107,7 +106,7 @@ const AddPic = () => {
         title: event.target.elements[0].value
       })
       
-      
+      console.log('done');
     }
 
     useEffect(() => {

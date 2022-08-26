@@ -4,6 +4,7 @@ import {storage} from "../firebase";
 import {ref, uploadBytes, listAll, getDownloadURL} from "firebase/storage";
 import { firestoreDb } from '../firebase';
 import {getDocs, collection} from 'firebase/firestore';
+import { render } from '@testing-library/react';
 
 const HomePage = () => {
 
@@ -16,8 +17,8 @@ const imageListRef = ref(storage, "images/");
 const colRef = collection(firestoreDb, 'posts');
 
 //Get collection's data
-
-getDocs(colRef)
+useEffect(() => {
+  getDocs(colRef)
   .then((snapshot) => {
     snapshot.docs.forEach((doc) => {
       photos.push({...doc.data(), id:doc.id});
@@ -27,6 +28,18 @@ getDocs(colRef)
   .catch(err => {
     console.log(err.message);
   })
+
+},[])
+// getDocs(colRef)
+//   .then((snapshot) => {
+//     snapshot.docs.forEach((doc) => {
+//       photos.push({...doc.data(), id:doc.id});
+//     })
+//     console.log(photos);
+//   })
+//   .catch(err => {
+//     console.log(err.message);
+//   })
 
 
 
@@ -41,9 +54,33 @@ getDocs(colRef)
 //   });
 // }, [])
 
+const loadPage = (photos) => {
+  
+  {photos.map((photo) => {
+    return( 
+        
+      <ul key = {photo.id}>
+        <h1> {photo.title} </h1>
+      
+
+        
+        <img src = {photo.pictureLink} />
+        
+        <p> {photo.caption} </p>
+      </ul>
+      
+
+      )
+  })} 
+}
+
+useEffect(() => {
+  loadPage(photos);
+}, []);
 
 // I think useEffect and setImageList is calling duplicates
 
+  
   return (
     <div>
       <h1>Hello from Main/Home page of instagram</h1>
@@ -53,20 +90,31 @@ getDocs(colRef)
     </ul>
     <div id = "postContainer">
         <div id = "imgList">
-          {imageList.map((url) => {
+          {photos.map((photo) => {
+           
             return( 
-            <div>
-              <h1>Title </h1> 
-              <img src = {url}/>
-              <p> comment placeholder </p>
-            </div>
+               
+              <ul key = {photo.id}>
+                
+                <h1> {photo.title} </h1>
+              
+        
+               
+                <img src = {photo.pictureLink} />
+                
+                <p> {photo.caption} </p>
+              </ul>
+             
+
               )
-          })}
+              
+        })}
         </div>
      
       </div>
     </div>
   );
+        
 };
   
   export default HomePage;
