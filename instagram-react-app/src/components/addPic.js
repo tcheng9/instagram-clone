@@ -1,6 +1,6 @@
 import {Link} from 'react-router-dom';
 import {storage} from '../firebase';
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef} from "react";
 import {ref, uploadBytes, listAll, getDownloadURL} from "firebase/storage";
 // import { isReactNative } from '@firebase/util';
 import {getDatabase, set} from 'firebase/database';
@@ -16,7 +16,7 @@ const AddPic = () => {
     const imageListRef = ref(storage, "images/");
     const [currFileName, setCurrFileName] = useState('');
     const [currImgUrl, setCurrImgUrl] = useState('');
-    const currImgUrlRef = useRef(currImgUrl);
+    const urlRef = useRef('');
     
     
     const onSubmit = (e) => {
@@ -37,10 +37,12 @@ const AddPic = () => {
       const timeoutUpload = setTimeout(function() {
         // //Get URL of image (by accessing DB and checking if it exists)
         
-        getImgURL(formFileName);
+        getImgURL(e, formFileName);
         
         // //Load info + img url to database
-        dataToDB(e, currImgUrl);
+        console.log(urlRef.current);
+        console.log(currImgUrl);
+        
       }, 30000)
 
       return () => clearTimeout(timeoutUpload);
@@ -78,7 +80,7 @@ const AddPic = () => {
 
     
     
-    const getImgURL = (imgName) => {
+    const getImgURL = (e, imgName) => {
       //NOTE: storage is actually an imported function `const storage = getStorage()`;
 
       //Ref a specific file in storage
@@ -87,32 +89,30 @@ const AddPic = () => {
       //Get download URL and set to var
 ////////MAIN ISSUE: HOW TO GET SETCURRIMGURL TO SET A VALUE
       getDownloadURL(imagesRef).then((url) => {
-        currImgUrlRef = currImgUrl
-        console.log("fb storage url is: " + url);
-        setCurrImgUrl(currImgUrlRef);
-       
+        console.log("getImgUrl()" + url);
+        
+        dataToDB(e, url);
       });
       
     }
 
-    const newImgUrl =(imgName) => {
-      const imageRef = ref(storage, 'images/' + imgName);
-    }
 
     const dataToDB = (event, imgUrl) => {
       const colRef = collection(firestoreDb, "posts");
       console.log("uploading to DB");
-      console.log(imgUrl);
+      
       addDoc(colRef, {
         caption: event.target.elements[1].value,
         pictureLink: imgUrl,
         title: event.target.elements[0].value
       })
       
-      currImgUrl = [];
+      
     }
 
-    
+    useEffect(() => {
+      urlRef.current = currImgUrl;
+    },[currImgUrl])
     // useEffect(() => {
       
     //   listAll(imageListRef).then((response) => {
